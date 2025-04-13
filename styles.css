@@ -1,0 +1,975 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Default theme (pink) */
+    --primary: #ff69b4;
+    --secondary: #ffb6c1;
+    --accent: #ff1493;
+    --text: #333;
+    --background: #fff5f8;
+    --card-bg: #fff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Blue theme */
+[data-theme="blue"] {
+    --primary: #4169e1;
+    --secondary: #87ceeb;
+    --accent: #1e90ff;
+    --text: #333;
+    --background: #f0f8ff;
+    --card-bg: #fff;
+}
+
+/* Green theme */
+[data-theme="green"] {
+    --primary: #3cb371;
+    --secondary: #98fb98;
+    --accent: #2e8b57;
+    --text: #333;
+    --background: #f0fff0;
+    --card-bg: #fff;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+h1 {
+    color: var(--primary);
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.stats span {
+    background-color: var(--card-bg);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.timer-container {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 3rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.pig-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 20px auto;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pig {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    background-color: #ffd4d4;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    border: none;
+    box-shadow: 0 4px 8px rgba(255, 182, 193, 0.3);
+    z-index: 1000;
+}
+
+.pig::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 212, 212, 0) 70%);
+}
+
+.face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.eyes {
+    position: absolute;
+    top: 38%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 0 35px;
+    z-index: 2;
+}
+
+.eye {
+    width: 18px;
+    height: 18px;
+    background-color: #333;
+    border-radius: 50%;
+    position: relative;
+    transform: rotate(5deg);
+}
+
+.eye::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: white;
+    border-radius: 50%;
+    top: 15%;
+    left: 15%;
+}
+
+.snout {
+    position: absolute;
+    width: 35px;
+    height: 30px;
+    background-color: #ffb6c1;
+    border-radius: 35% 35% 45% 45%;
+    bottom: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.snout::before,
+.snout::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #ff9999;
+    border-radius: 50%;
+    top: 45%;
+    transform: translateY(-50%);
+}
+
+.snout::before {
+    left: 20%;
+}
+
+.snout::after {
+    right: 20%;
+}
+
+.ears {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.ear {
+    position: absolute;
+    width: 35px;
+    height: 40px;
+    background-color: #ffd4d4;
+    border-radius: 50% 50% 0 0;
+    top: 5px;
+    z-index: 1;
+}
+
+.ear.left {
+    left: 20px;
+    transform: rotate(-20deg) skewX(-15deg);
+}
+
+.ear.right {
+    right: 20px;
+    transform: rotate(20deg) skewX(15deg);
+}
+
+.ear::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 22px;
+    background-color: #ffb6c1;
+    border-radius: 50% 50% 0 0;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.cheeks {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.cheek {
+    position: absolute;
+    width: 20px;
+    height: 10px;
+    background-color: #ffb6c1;
+    border-radius: 50%;
+    bottom: 35%;
+    opacity: 0.4;
+}
+
+.cheek.left {
+    left: 18%;
+    transform: rotate(-10deg);
+}
+
+.cheek.right {
+    right: 18%;
+    transform: rotate(10deg);
+}
+
+/* 食物容器 */
+.food-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.food-item {
+    width: 40px;
+    height: 40px;
+    cursor: grab;
+    transition: transform 0.2s;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.food-item:hover {
+    transform: scale(1.1);
+}
+
+.food-item img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* 拖拽时的样式 */
+.food-item.dragging {
+    opacity: 0.5;
+}
+
+/* 小猪状态 */
+.pig-status {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 5px 15px;
+    border-radius: 15px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pig-status.show {
+    opacity: 1;
+}
+
+/* 小猪吃东西的动画 */
+@keyframes eat {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pig.eating .snout {
+    animation: eat 0.5s infinite;
+}
+
+/* 小猪开心的动画 */
+@keyframes happy {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-5deg);
+    }
+    75% {
+        transform: rotate(5deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.pig.happy {
+    animation: happy 0.5s infinite;
+}
+
+.pig.active {
+    animation: bounce 1s infinite;
+}
+
+.timer {
+    font-size: 4rem;
+    margin: 2rem 0;
+    color: var(--primary);
+    font-family: 'Courier New', monospace;
+    font-weight: 300;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+button {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--secondary);
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+button:hover {
+    background-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.settings {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.setting-item {
+    margin-bottom: 1.5rem;
+}
+
+.setting-item label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.setting-item input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.setting-item input:focus {
+    border-color: var(--secondary);
+    outline: none;
+}
+
+.analysis {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow);
+}
+
+.chart-container {
+    margin: 2rem 0;
+    height: 300px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.stat-card {
+    background-color: var(--background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-card h3 {
+    color: var(--text);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+.achievements {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.achievement-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.achievement {
+    background-color: var(--background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.achievement:hover {
+    transform: translateY(-5px);
+}
+
+.achievement.locked {
+    opacity: 0.5;
+}
+
+.achievement h3 {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+@keyframes bounce {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.05) rotate(5deg);
+    }
+    50% {
+        transform: scale(1) rotate(0deg);
+    }
+    75% {
+        transform: scale(1.05) rotate(-5deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.pig:hover .ear.left {
+    transform: rotate(-45deg);
+}
+
+.pig:hover .ear.right {
+    transform: rotate(45deg);
+}
+
+.pig:hover .snout {
+    transform: translateX(-50%) scale(1.1);
+}
+
+.pig:hover .eye::before {
+    transform: translate(-50%, -50%) scale(1.2);
+}
+
+.pig:hover .cheek {
+    opacity: 1;
+}
+
+.theme-selector {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.theme-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.theme-option:hover {
+    transform: scale(1.1);
+}
+
+.theme-option.active {
+    border-color: #333;
+}
+
+.theme-pink {
+    background: linear-gradient(45deg, #ff9999, #ffb3b3);
+}
+
+.theme-blue {
+    background: linear-gradient(45deg, #99ccff, #b3d9ff);
+}
+
+.theme-green {
+    background: linear-gradient(45deg, #99ffcc, #b3ffd9);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .timer-container {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .timer {
+        font-size: 3rem;
+    }
+
+    .controls {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .control-btn {
+        width: calc(50% - 0.5rem);
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .pig-container {
+        width: 160px;
+        height: 160px;
+        margin: 10px auto;
+    }
+
+    .pig {
+        width: 140px;
+        height: 140px;
+    }
+
+    .eye {
+        width: 14px;
+        height: 14px;
+    }
+
+    .snout {
+        width: 28px;
+        height: 24px;
+    }
+
+    .ear {
+        width: 28px;
+        height: 32px;
+    }
+
+    .food-container {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 15px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 10px 20px;
+        border-radius: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .food-item {
+        width: 50px;
+        height: 50px;
+    }
+
+    .theme-selector {
+        position: fixed;
+        top: auto;
+        bottom: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        padding: 8px 15px;
+        border-radius: 15px;
+    }
+
+    .theme-option {
+        width: 25px;
+        height: 25px;
+    }
+
+    .settings {
+        padding: 1rem;
+    }
+
+    .setting-item {
+        margin-bottom: 1rem;
+    }
+
+    .setting-item input {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .stats {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stats span {
+        width: 100%;
+        text-align: center;
+        padding: 0.8rem;
+    }
+
+    .achievement-list {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .achievement {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .timer {
+        font-size: 2.5rem;
+    }
+
+    button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .pig {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+/* 增加更多动画效果 */
+@keyframes wiggle {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    25% { transform: translateX(-50%) rotate(-5deg); }
+    75% { transform: translateX(-50%) rotate(5deg); }
+}
+
+@keyframes bounce-soft {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes happy-jump {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-15px) scale(1.1); }
+}
+
+@keyframes sad {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
+}
+
+.pig.happy {
+    animation: happy-jump 0.8s ease infinite;
+}
+
+.pig.sad {
+    animation: sad 1s ease infinite;
+}
+
+.pig.eating .snout {
+    animation: wiggle 0.5s ease infinite;
+}
+
+.pig:hover {
+    animation: bounce-soft 1s ease infinite;
+}
+
+.ear {
+    transition: transform 0.3s ease;
+}
+
+.pig.happy .ear.left {
+    transform: rotate(-45deg);
+}
+
+.pig.happy .ear.right {
+    transform: rotate(45deg);
+}
+
+.pig.sad .ear.left {
+    transform: rotate(-10deg);
+}
+
+.pig.sad .ear.right {
+    transform: rotate(10deg);
+}
+
+/* 添加表情动画 */
+.eye {
+    transition: all 0.3s ease;
+}
+
+.pig.happy .eye {
+    transform: scale(0.8) translateY(2px);
+}
+
+.pig.sad .eye {
+    transform: scaleY(0.5);
+}
+
+.pig.sleeping .eye {
+    height: 2px;
+    background-color: #333;
+    border-radius: 2px;
+    transform: translateY(2px);
+}
+
+.pig.sleeping .eye::before {
+    display: none;
+}
+
+/* 添加心形动画 */
+@keyframes float-heart {
+    0% {
+        transform: translate(-50%, 0) scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50px) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -100px) scale(0);
+        opacity: 0;
+    }
+}
+
+.heart {
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    color: #ff6b6b;
+    font-size: 20px;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.heart.animate {
+    animation: float-heart 1s ease-out forwards;
+}
+
+/* 添加食物动画 */
+@keyframes eat-food {
+    0% {
+        transform: translate(-50%, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, 20px) scale(0);
+        opacity: 0;
+    }
+}
+
+.food-animation {
+    position: absolute;
+    left: 50%;
+    bottom: 60%;
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.food-animation.animate {
+    animation: eat-food 0.5s ease-out forwards;
+}
+
+/* 针对超小屏幕设备的优化 */
+@media (max-width: 320px) {
+    .pig-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .pig {
+        width: 120px;
+        height: 120px;
+    }
+
+    .timer {
+        font-size: 2.5rem;
+    }
+
+    .food-container {
+        padding: 8px 15px;
+    }
+
+    .food-item {
+        width: 40px;
+        height: 40px;
+    }
+
+    .theme-selector {
+        bottom: 60px;
+    }
+
+    .theme-option {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* 添加触摸设备的交互优化 */
+@media (hover: none) {
+    .pig:hover {
+        transform: none;
+    }
+
+    .food-item:hover {
+        transform: none;
+    }
+
+    .theme-option:hover {
+        transform: none;
+    }
+
+    button:hover {
+        transform: none;
+    }
+
+    .achievement:hover {
+        transform: none;
+    }
+
+    /* 为触摸设备添加活跃状态动画 */
+    .pig:active {
+        transform: scale(1.1);
+    }
+
+    .food-item:active {
+        transform: scale(1.1);
+    }
+
+    .theme-option:active {
+        transform: scale(1.1);
+    }
+
+    button:active {
+        transform: scale(0.95);
+        background-color: var(--primary);
+    }
+}
+
+/* 优化触摸反馈 */
+* {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* 优化字体大小自适应 */
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+/* 优化滚动行为 */
+body {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
