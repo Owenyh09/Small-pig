@@ -107,12 +107,12 @@ h1 {
     height: 180px;
     background-color: #ffd4d4;
     border-radius: 50%;
+    margin: 0 auto;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
     border: none;
     box-shadow: 0 4px 8px rgba(255, 182, 193, 0.3);
     z-index: 1000;
@@ -154,6 +154,7 @@ h1 {
     border-radius: 50%;
     position: relative;
     transform: rotate(5deg);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .eye::before {
@@ -165,6 +166,7 @@ h1 {
     border-radius: 50%;
     top: 15%;
     left: 15%;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .snout {
@@ -176,7 +178,7 @@ h1 {
     bottom: 35%;
     left: 50%;
     transform: translateX(-50%);
-    transition: all 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 2;
 }
 
@@ -366,7 +368,7 @@ h1 {
 }
 
 .pig.active {
-    animation: bounce 1s infinite;
+    animation: bounce 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .timer {
@@ -523,41 +525,28 @@ button:active {
 }
 
 @keyframes bounce {
-    0% {
-        transform: scale(1) rotate(0deg);
-    }
-    25% {
-        transform: scale(1.05) rotate(5deg);
-    }
-    50% {
-        transform: scale(1) rotate(0deg);
-    }
-    75% {
-        transform: scale(1.05) rotate(-5deg);
-    }
-    100% {
-        transform: scale(1) rotate(0deg);
-    }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }
 
-.pig:hover .ear.left {
-    transform: rotate(-45deg);
+.pig:hover {
+    transform: scale(1.05);
 }
 
-.pig:hover .ear.right {
-    transform: rotate(45deg);
+.pig:hover .eye {
+    transform: rotate(5deg) scale(1.1);
+}
+
+.pig:hover .eye::before {
+    transform: scale(1.2);
 }
 
 .pig:hover .snout {
     transform: translateX(-50%) scale(1.1);
 }
 
-.pig:hover .eye::before {
-    transform: translate(-50%, -50%) scale(1.2);
-}
-
-.pig:hover .cheek {
-    opacity: 1;
+.pig.active {
+    animation: bounce 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .theme-selector {
@@ -972,4 +961,19 @@ html {
 body {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
+}
+
+@keyframes snoutWiggle {
+    0%, 100% { transform: translateX(-50%) rotate(0deg); }
+    25% { transform: translateX(-50%) rotate(-5deg); }
+    75% { transform: translateX(-50%) rotate(5deg); }
+}
+
+.pig.eating .snout {
+    animation: snoutWiggle 0.5s ease-in-out infinite;
+}
+
+@keyframes pigBounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }

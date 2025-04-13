@@ -257,9 +257,9 @@ class FocusTimer {
         const snoutDistance = Math.sqrt(Math.pow(snoutX, 2) + Math.pow(snoutY, 2));
         
         if (snoutDistance < 30) {
-            this.snout.style.transform = `scale(1.1)`;
+            this.snout.style.transform = `translateX(-50%) scale(1.1)`;
         } else {
-            this.snout.style.transform = `scale(1)`;
+            this.snout.style.transform = `translateX(-50%) scale(1)`;
         }
     }
 
@@ -293,7 +293,6 @@ class FocusTimer {
                     this.checkAchievements();
                     this.saveData();
                     this.updateCharts();
-                    this.updateAnalytics();
                 }
             }
         }
@@ -406,14 +405,29 @@ class FocusTimer {
 
     recordFocusSession(minutes) {
         const now = new Date();
-        const session = {
-            date: now.toISOString().split('T')[0],
-            time: now.toLocaleTimeString(),
-            duration: minutes,
-            hour: now.getHours(),
-            dayOfWeek: now.getDay()
-        };
-        this.focusHistory.push(session);
+        const today = now.toISOString().split('T')[0];
+        
+        // 查找今天是否已有记录
+        const todaySession = this.focusHistory.find(session => session.date === today);
+        
+        if (todaySession) {
+            // 更新今天的记录
+            todaySession.duration += minutes;
+        } else {
+            // 创建新记录
+            this.focusHistory.push({
+                date: today,
+                duration: minutes
+            });
+        }
+        
+        // 保持最近30天的记录
+        if (this.focusHistory.length > 30) {
+            this.focusHistory = this.focusHistory.slice(-30);
+        }
+        
+        this.saveData();
+        this.updateCharts();
     }
 
     updateDailyStats() {
@@ -632,64 +646,9 @@ class FocusTimer {
         const pig = document.querySelector('.pig');
         const pigStatus = document.querySelector('.pig-status');
 
-        // 拖拽食物
+        // 为每个食物项添加点击事件
         foodItems.forEach(item => {
-            // 鼠标点击拖拽
-            item.addEventListener('mousedown', (e) => {
-                e.preventDefault(); // 防止原生拖拽
-                const clone = item.cloneNode(true);
-                clone.style.position = 'fixed';
-                clone.style.zIndex = '1000';
-                clone.style.pointerEvents = 'none';
-                clone.style.width = '40px';
-                clone.style.height = '40px';
-                document.body.appendChild(clone);
-
-                const startX = e.clientX - item.offsetWidth / 2;
-                const startY = e.clientY - item.offsetHeight / 2;
-                clone.style.left = startX + 'px';
-                clone.style.top = startY + 'px';
-
-                const moveFood = (moveEvent) => {
-                    const x = moveEvent.clientX - item.offsetWidth / 2;
-                    const y = moveEvent.clientY - item.offsetHeight / 2;
-                    clone.style.left = x + 'px';
-                    clone.style.top = y + 'px';
-
-                    // 检查是否在小猪上方
-                    const pigRect = pig.getBoundingClientRect();
-                    if (moveEvent.clientX >= pigRect.left && 
-                        moveEvent.clientX <= pigRect.right && 
-                        moveEvent.clientY >= pigRect.top && 
-                        moveEvent.clientY <= pigRect.bottom) {
-                        pig.style.transform = 'scale(1.1)';
-                    } else {
-                        pig.style.transform = 'scale(1)';
-                    }
-                };
-
-                const releaseFood = (upEvent) => {
-                    document.removeEventListener('mousemove', moveFood);
-                    document.removeEventListener('mouseup', releaseFood);
-                    
-                    // 检查是否在小猪上方释放
-                    const pigRect = pig.getBoundingClientRect();
-                    if (upEvent.clientX >= pigRect.left && 
-                        upEvent.clientX <= pigRect.right && 
-                        upEvent.clientY >= pigRect.top && 
-                        upEvent.clientY <= pigRect.bottom) {
-                        this.feedPig(item.dataset.food);
-                    }
-                    
-                    document.body.removeChild(clone);
-                    pig.style.transform = 'scale(1)';
-                };
-
-                document.addEventListener('mousemove', moveFood);
-                document.addEventListener('mouseup', releaseFood);
-            });
-
-            // 触摸拖拽支持
+            // 添加触摸事件支持
             item.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 const touch = e.touches[0];
@@ -712,9 +671,9 @@ class FocusTimer {
                         touch.clientX <= pigRect.right && 
                         touch.clientY >= pigRect.top && 
                         touch.clientY <= pigRect.bottom) {
-                        pig.style.transform = 'scale(1.1)';
+                        pig.classList.add('eating');
                     } else {
-                        pig.style.transform = 'scale(1)';
+                        pig.classList.remove('eating');
                     }
                 };
 
@@ -733,12 +692,71 @@ class FocusTimer {
                     }
                     
                     document.body.removeChild(clone);
-                    pig.style.transform = 'scale(1)';
+                    pig.classList.remove('eating');
                 };
 
                 document.addEventListener('touchmove', moveFood);
                 document.addEventListener('touchend', releaseFood);
             });
+
+            // 保留原有的鼠标事件
+            item.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                const clone = item.cloneNode(true);
+                clone.style.position = 'fixed';
+                clone.style.zIndex = '1000';
+                clone.style.pointerEvents = 'none';
+                clone.style.width = '40px';
+                clone.style.height = '40px';
+                document.body.appendChild(clone);
+
+                const moveFood = (moveEvent) => {
+                    clone.style.left = (moveEvent.clientX - item.offsetWidth / 2) + 'px';
+                    clone.style.top = (moveEvent.clientY - item.offsetHeight / 2) + 'px';
+
+                    // 检查是否在小猪上方
+                    const pigRect = pig.getBoundingClientRect();
+                    if (moveEvent.clientX >= pigRect.left && 
+                        moveEvent.clientX <= pigRect.right && 
+                        moveEvent.clientY >= pigRect.top && 
+                        moveEvent.clientY <= pigRect.bottom) {
+                        pig.classList.add('eating');
+                    } else {
+                        pig.classList.remove('eating');
+                    }
+                };
+
+                const releaseFood = (upEvent) => {
+                    document.removeEventListener('mousemove', moveFood);
+                    document.removeEventListener('mouseup', releaseFood);
+                    
+                    // 检查是否在小猪上方释放
+                    const pigRect = pig.getBoundingClientRect();
+                    if (upEvent.clientX >= pigRect.left && 
+                        upEvent.clientX <= pigRect.right && 
+                        upEvent.clientY >= pigRect.top && 
+                        upEvent.clientY <= pigRect.bottom) {
+                        this.feedPig(item.dataset.food);
+                    }
+                    
+                    document.body.removeChild(clone);
+                    pig.classList.remove('eating');
+                };
+
+                document.addEventListener('mousemove', moveFood);
+                document.addEventListener('mouseup', releaseFood);
+            });
+        });
+
+        // 添加触摸事件处理
+        pig.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            pig.classList.add('eating');
+        });
+
+        pig.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            pig.classList.remove('eating');
         });
 
         // 点击小猪
